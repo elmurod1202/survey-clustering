@@ -99,6 +99,8 @@ def makeFeatureVec(words, model):
         if (word in list(model.index_to_key)):
             nwords = nwords + 1.
             featureVec = np.add(featureVec,model[word])
+        else:
+            print("!!! Alert: OOV: ", word)
     # 
     # Divide the result by the number of words to get the average
     featureVec = np.divide(featureVec,nwords)
@@ -149,16 +151,32 @@ def get_optimal_cluster_numbers(result):
 
     return optimal_cluster_numbers
 
-def plot2D_dots(result):
+def plot2D_scatter(result):
     pyplot.scatter(result[:, axes[0]], result[:, axes[1]], c="black", s=10)
     result_filename = "output/result_scatter_2d.png"
     pyplot.savefig(result_filename)
     print("2D output resulting scatter saved in file:" + result_filename)
     pyplot.close()
 
+def plot2D_dots(result, wordgroups, words):
+    for g, group in enumerate(wordgroups):
+        for word in group:
+            if not word in words:
+                continue
+            i = words.index(word)
+            # Create plot point
+            coord = (result[i, axes[0]], result[i, axes[1]])
+            color = colors[g] if g < len(colors) else defaultcolor
+            size = sizes[g] if g < len(sizes) else defaultsize
+            pyplot.annotate('o', xy=coord, color=color, fontsize=size)
+    result_filename = "output/result_dots_grouped_2d.png"
+    pyplot.savefig(result_filename)
+    print("2D output resulting scatter with words saved in file:" + result_filename)
+    pyplot.show()
+    pyplot.close()
 
-def plot2D(result, wordgroups, words):
-    plot2D_dots(result)
+
+def plot2D_words(result, wordgroups, words):
     pyplot.scatter(result[:, axes[0]], result[:, axes[1]], c="black", s=10)
     for g, group in enumerate(wordgroups):
         for word in group:
@@ -211,18 +229,27 @@ def get_words(wordf, model, stopwords):
     # Extract words to plot from file
     for word in open(wordf, "r", encoding="utf-8").read().split("\n"):
         # if (word in list(model.index_to_key)):
-        words.append(word)
+        if len(word) > 0:
+            words.append(word)
 
 
     # Get word vectors from model
     # vecs = {w: model.key_to_index[w] for w in words}
     vecs = {}
-    for word in words:
+    words_new = []
+    for count_word, word in enumerate(words):
+        vec_done = False
+        vec = 0
         if "_" not in word:
             # This means it's a single word, so we get only its vector:
             if (word in list(model.index_to_key)):
                 vecs[word] = model.key_to_index[word]
-                # print("Regular vec: ", model.key_to_index[word])
+                vec = model.key_to_index[word]
+                vec_done = True
+                words_new.append(word)
+            else:
+                print("!!! Alert: OOV: ", word)
+
         else:
             # This means the expression is not a single word
             # We have to deal with this carefully:
@@ -230,26 +257,38 @@ def get_words(wordf, model, stopwords):
             expression = word.split("_")
             expression_chunks = remove_stopwords(expression, stopwords)
             print("Found a stopword: {}, un-stopworded it:{}".format(word, ' '.join(expression_chunks)))
-            if len(expression_chunks) <=1:
+            if len(expression_chunks) == 0:
+                print("!!! Alert: OOV, could not handle un-stopwording: ", word)
+            if len(expression_chunks) == 1:
                 # This means after removing stopword it became a single word
                 if (expression_chunks[0] in list(model.index_to_key)):
                     new_vec = model[expression_chunks[0]]
-                    new_vec_index = model.key_to_index[expression_chunks[0]]
-                    print("new vec:", new_vec)
-                    vecs[word] = new_vec_index
                     # We also now have to add this expression to the list of vectors in the model:
-                    model.add_vector(word, new_vec)
+                    new_vec_index = model.add_vector(word, new_vec)
+                    print("new-vec_index:", new_vec_index)
+                    vecs[word] = new_vec_index
+                    vec = new_vec_index
+                    vec_done = True
+                    words_new.append(word)
+                else:
+                    print("!!! Alert: OOV: ", word)
             else:
                 # This means that it still consists of multiple words
                 # So we consider their average vector for that:
                 new_vec_index = model.add_vector(word, makeFeatureVec(expression_chunks, model))
-                print("new vec:", new_vec_index)
                 vecs[word] = new_vec_index
+                print("new-vec_index:", new_vec_index)
+                vec_done = True
+                vec = new_vec_index
+                words_new.append(word)
                 # We also now have to add this expression to the list of vectors in the model:
+        if not vec_done:
+            print("!!!!!!!!!!!!! One word could not get a vector:", word)
+        # print("{}. {}: {}".format(count_word, word, vec))
 
-    return words, vecs, model
+    return words_new, vecs, model
 
-def get_groups(vecs, optimalK):
+def get_groups(vecs, optimalK, model):
     groups = []
 
     # Assign groups if using clustering
@@ -283,7 +322,9 @@ if __name__ == '__main__':
 
     model = model_new
     coords = model_new[vecs]
-
+    print("Words len: ", len(words))
+    print("Vecs len: ", len(vecs))
+    print("Model len: ", len(model))
 
     print("Plotting in 2D:")
     # Create 2D axes to plot on
@@ -304,7 +345,7 @@ if __name__ == '__main__':
     
     # Now grouping the words:
     print("Grouping the words into clusters")
-    groups = get_groups(vecs,optimalK)
+    groups = get_groups(vecs,optimalK, model_new)
     #Saving the resulting grouped data in a JSON format file:
     with open('output/result_groups.json', 'w') as f:
         json.dump(groups, f, indent=1)
@@ -323,15 +364,17 @@ if __name__ == '__main__':
 
     print("Plotting clusters:")
     # Plot vectors on axes
-    plot2D(result, groups, words)
+    plot2D_scatter(result)
+    plot2D_words(result, groups, words)
+    plot2D_dots(result, groups, words)
 
-    # You can also uncomment this part to plot the axes in 3D:
-    # print("Plotting in 3D:")
-    # # Create 3D axes to plot on
-    # axes = [1, 2, 3]
-    # pca = PCA(n_components=max(axes)+1)
-    # result = pca.fit_transform(coords)
-    # plot3D(result, groups, words)
+    # # You can also uncomment this part to plot the axes in 3D:
+    print("Plotting in 3D:")
+    # Create 3D axes to plot on
+    axes = [0, 1, 2]
+    pca = PCA(n_components=max(axes)+1)
+    result = pca.fit_transform(coords)
+    plot3D(result, groups, words)
 
 
     print("Programm finished.")
