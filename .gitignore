@@ -1,0 +1,7 @@
+# Default ignored files
+**/logs
+*.log
+*.vec
+*.bin
+*.xls
+step.*
