@@ -25,14 +25,8 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#how-it-works">How to use</a></li>
+    <li><a href="#usage">How to use</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#Acknowledgments">Acknowledgements</a></li>
   </ol>
@@ -43,15 +37,15 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 <div align="center">
-<img src="https://github.com/elmurod1202/survey-clustering/blob/main/src/example-figure.png?raw=true" width = "500" Alt = "Spanish words scattered in 2D space">
+<img src="https://github.com/elmurod1202/survey-clustering/blob/main/src/example-figure.png?raw=true" width = "700" Alt = "Spanish words scattered in 2D space">
 </div>
 
 This project was created with a purpose to serve people who are searching for a solution to group/categorize words or even multi-word expressions by their meaning. There are so many tools and services to run statistics and/or create diagrams of given data, but they mostly work for numbers, when it comes to deal with words or some texts, those tools seem less useful since they do not include any way to visualize them in 2D/3D space based on their usage/meaning. This repository somewhat helps to perform following operations on texts:
 
 
 * Visualising texts:
-** Visualizing single words using word-embedding vectors of a language;
-** Visualizing multiple-word texts by obtaining average vecotrs of containing words (stopwords removed for better output quality);
+  * Visualizing single words using word-embedding vectors of a language;
+  * Visualizing multiple-word texts by obtaining average vecotrs of containing words (stopwords removed for better output quality);
 * Finding the optimal number of groups/clusters/categories to split words/texts based on their meaning, using Within Cluster Sum of Squares(WCSS) to find a level-oof using elbow method;
 * Grouping/Clustering texts using k-means clustering algorithm;
 * Visualizing grouped texts by different colors, using patplotlib.
@@ -63,63 +57,63 @@ This project was created with a purpose to serve people who are searching for a 
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+Programming language used:
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+* [Python](https://www.python.org/)
+
+These are the major libraries used inside Python:
+
+* [scikit-learn : A set of python modules for machine learning](https://scikit-learn.org/stable/)
+* [gensim: Python framework for fast Vector Space Modelling](https://pypi.org/project/gensim/)
+* [Matplotlib: Visualization with Python](https://matplotlib.org/)
+* [kneed: Knee-point detection in Python](https://pypi.org/project/kneed/)
+* [NumPy: The fundamental package for scientific computing with Python](https://numpy.org/)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- How it works  -->
+## How it works
+* First of all, the code loads the list of words/texts from given file: *input/answers.txt* (it's called answers in this case, because it was an answers of a particular survey), and it obtains a vectors of those texts. An example diagram would look like this:
+<div align="center">
+<img src="https://github.com/elmurod1202/survey-clustering/blob/main/output/result_scatter_2d.png?raw=true" width = "500" Alt = "Spanish words scattered in 2D space">
+</div>
+
+* Then, the code obtains the optimal number of clusters for given texts to splin into, using an elbow-method. For our example it would look like this:
+<div align="center">
+<img src="https://github.com/elmurod1202/survey-clustering/blob/main/output/elbow_method_2d.png?raw=true" width = "500" Alt = "Elbow method example diagram">
+</div>
+
+* Lastly, the code categorizes the list of texts into groups by their meaning. The final result would look like this:
+<div align="center">
+<img src="https://github.com/elmurod1202/survey-clustering/blob/main/output/result_words_2d.png?raw=true" width = "500" Alt = "Clustered words in a scatter">
+</div>
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
-<!-- GETTING STARTED -->
-## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- USAGE EXAMPLES -->
+<!-- How to use  -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+To use this code you should have at least a small understanding of how to run a Python code, with Python installed machine. You should also install above-mentioned necessary framework/libraries into it.
+There are two ways you can run this code: 
+1. Either clone the repo, and run the survey-clustering.py
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+   ```sh
+   git clone https://github.com/elmurod1202/survey-clustering.git
+   ```
+2. Or just download only the survey-clustering.py file and make some small changes like where to read the files from and where to store the results to. That's it.
+
+``IMPORTANT:`` This code uses a Spanish word embeddings vector file that is not inluded here due to its big size. 
+Please download the file into the src/ folder from the link: <a href="https://zenodo.org/record/3234051/files/embeddings-l-model.vec?download=1">Spanish word vectors (3.4 GB)</a>
+
+### Adapting for other languages:
+This code is ontended for Spanish, but it can be adapted to many other languages just by changing two files in the src/ folder: 
+* src/embeddings-l-model.vec : Spanish word vectors file to a word-vector file of any language;
+* src/spanish-stopwords.txt : Spanish stopwords file replaced by any toher language stopwords.
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -128,26 +122,24 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the GNU GENERAL PUBLIC LICENSE. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+Big shoutouts to <a href = "https://www.linkedin.com/in/luissantalla/">Luis</a>  for bringing this problem on the table. 
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+We are grateful for these resources and tutorials for making this repository possible:
+
+* [Tutorial on Visualising words](https://towardsdatascience.com/visualizing-word-embedding-with-pca-and-t-sne-961a692509f5)
+* [Tutorial on K-means clustering](https://towardsdatascience.com/machine-learning-algorithms-part-9-k-means-example-in-python-f2ad05ed5203)
+* [Tutorial on K-means clustering](https://towardsdatascience.com/machine-learning-algorithms-part-9-k-means-example-in-python-f2ad05ed5203)
+* [Spanish pretrained word-embeddings](https://github.com/dccuchile/spanish-word-embeddings)
+* [GitHub Readme template](https://github.com/othneildrew/Best-README-Template)
+* [Visual Studio Code](https://code.visualstudio.com/)
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

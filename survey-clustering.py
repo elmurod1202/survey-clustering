@@ -4,21 +4,15 @@
 # Author: Elmurod Kuriyozov (elmurod1202@gmail.com)
 # Date: March 25, 2022
 
-# import io
 from sklearn.decomposition import PCA
-import matplotlib
 from matplotlib import pyplot
-# matplotlib.use("GTK3Agg")
-from mpl_toolkits.mplot3d import Axes3D
+# from mpl_toolkits.mplot3d import Axes3D
 
-# from gensim.models import Word2Vec
 from gensim.models import KeyedVectors
 from sklearn.cluster import KMeans
 # from nltk.tokenize import word_tokenize
 from smart_open import open, smart_open
 import time
-# from nltk.corpus import stopwords
-import pandas as pd
 
 # Tried using cache functions, so I don't have to load the word-embedding model every time I run the code:
 from functools import lru_cache
