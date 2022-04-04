@@ -42,19 +42,20 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+<div align="center">
+<img src="https://github.com/elmurod1202/survey-clustering/blob/main/src/example-figure.png?raw=true" width = "500" Alt = "Spanish words scattered in 2D space">
+</div>
 
-[![Scattered Spanish words][src/example_figure.png]](https://github.com/elmurod1202/survey-clustering)
+This project was created with a purpose to serve people who are searching for a solution to group/categorize words or even multi-word expressions by their meaning. There are so many tools and services to run statistics and/or create diagrams of given data, but they mostly work for numbers, when it comes to deal with words or some texts, those tools seem less useful since they do not include any way to visualize them in 2D/3D space based on their usage/meaning. This repository somewhat helps to perform following operations on texts:
 
 
+* Visualising texts:
+** Visualizing single words using word-embedding vectors of a language;
+** Visualizing multiple-word texts by obtaining average vecotrs of containing words (stopwords removed for better output quality);
+* Finding the optimal number of groups/clusters/categories to split words/texts based on their meaning, using Within Cluster Sum of Squares(WCSS) to find a level-oof using elbow method;
+* Grouping/Clustering texts using k-means clustering algorithm;
+* Visualizing grouped texts by different colors, using patplotlib.
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
