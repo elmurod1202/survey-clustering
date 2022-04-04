@@ -25,7 +25,7 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li><a href="#how-it-works">How to use</a></li>
+    <li><a href="#how-it-works">How it works</a></li>
     <li><a href="#usage">How to use</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#Acknowledgments">Acknowledgements</a></li>
@@ -99,14 +99,14 @@ These are the major libraries used inside Python:
 
 To use this code you should have at least a small understanding of how to run a Python code, with Python installed machine. You should also install above-mentioned necessary framework/libraries into it.
 There are two ways you can run this code: 
-1. Either clone the repo, and run the survey-clustering.py
+1. Either clone the repo by running the commend below, and run the survey-clustering.py:
 
    ```sh
    git clone https://github.com/elmurod1202/survey-clustering.git
    ```
 2. Or just download only the survey-clustering.py file and make some small changes like where to read the files from and where to store the results to. That's it.
 
-``IMPORTANT:`` This code uses a Spanish word embeddings vector file that is not inluded here due to its big size. 
+***IMPORTANT:*** This code uses a Spanish word embeddings vector file that is not inluded here due to its big size. 
 Please download the file into the src/ folder from the link: <a href="https://zenodo.org/record/3234051/files/embeddings-l-model.vec?download=1">Spanish word vectors (3.4 GB)</a>
 
 ### Adapting for other languages:
