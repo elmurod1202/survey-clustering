@@ -9,6 +9,7 @@
   <p align="center">
     Answers of a survey in Spanish are categorized using word-embeddings, and categorized using k-means clustering. <br />
     This project also includes dealing with multi-word expressions, by removing stopwords, and obtaining their vector-averages. <br />
+    This is an example for Spanish language but it can easily be adapted for any other languages.<br />
     The number of clusters are obtained by optimal curvage finding algorithm(elbow method).
   </p>
 </div>
@@ -104,7 +105,7 @@ There are two ways you can run this code:
    ```sh
    git clone https://github.com/elmurod1202/survey-clustering.git
    ```
-2. Or just download only the survey-clustering.py file and make some small changes like where to read the files from and where to store the results to. That's it.
+2. Or just download only the *survey-clustering.py* (or *survey-clustering-minimum.py* if you want minimised working code without graphic visualisations) file and make some small changes like where to read the files from and where to store the results to. That's it.
 
 ***IMPORTANT:*** This code uses a Spanish word embeddings vector file that is not inluded here due to its big size. 
 Please download the file into the src/ folder from the link: <a href="https://zenodo.org/record/3234051/files/embeddings-l-model.vec?download=1">Spanish word vectors (3.4 GB)</a>
@@ -126,10 +127,11 @@ Distributed under the GNU GENERAL PUBLIC LICENSE. See `LICENSE.txt` for more inf
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Big shoutouts to <a href = "https://www.linkedin.com/in/luissantalla/">Luis</a>  for bringing this problem on the table. 
+Big shoutouts to <a href = "https://www.linkedin.com/in/luissantalla/">Luis</a>  for bringing this problem to the table. 
 
 We are grateful for these resources and tutorials for making this repository possible:
 

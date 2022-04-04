@@ -1,17 +1,14 @@
-# an example code for visualizing word embeddings in a 2D space.
-# This code was inspired by a tutorial: https://towardsdatascience.com/visualizing-word-embedding-with-pca-and-t-sne-961a692509f5
+# an example code for clustering texts by their meaning, with visual examples.
 # pretrained word embeddings for Spanish language was downloaded from: https://github.com/dccuchile/spanish-word-embeddings (the biggest one was taken)
+# The word-embedding visualisation code was inspired by a tutorial: https://towardsdatascience.com/visualizing-word-embedding-with-pca-and-t-sne-961a692509f5
+# This k-means clustering code was inspired by a tutorial: https://towardsdatascience.com/machine-learning-algorithms-part-9-k-means-example-in-python-f2ad05ed5203
 # Author: Elmurod Kuriyozov (elmurod1202@gmail.com)
 # Date: March 25, 2022
 
 from sklearn.decomposition import PCA
 from matplotlib import pyplot
-# from mpl_toolkits.mplot3d import Axes3D
-
 from gensim.models import KeyedVectors
 from sklearn.cluster import KMeans
-# from nltk.tokenize import word_tokenize
-from smart_open import open, smart_open
 import time
 
 # Tried using cache functions, so I don't have to load the word-embedding model every time I run the code:
@@ -21,28 +18,15 @@ from functools import lru_cache
 # Run this if you don't have it:
 # $ pip install kneed
 from kneed import KneeLocator
-
-import json
-from pprint import pprint
 import numpy as np
+import csv
 
-# Just going to ignore warnings for a clear output, not recommended though:
-import warnings
-warnings.filterwarnings("ignore")
+# # If you are just going to ignore warnings for a clear output, not recommended though:
+# import warnings
+# warnings.filterwarnings("ignore")
 
 
-# Plots words in a given list based on PCA axes
-
-# This is an old implementation, later replaced with gensim.
-# def load_vectors(fname):
-#     fin = open(fname, 'r', encoding='utf-8', newline='\n', errors='ignore')
-#     n, d = map(int, fin.readline().split())
-#     data = {}
-#     for line in fin:
-#         tokens = line.rstrip().split(' ')
-#         data[tokens[0]] = map(float, tokens[1:])
-#     return data
-
+# A function to return a list of words read from a given file:
 @lru_cache(maxsize=None)
 def load_model(modelf):
     model = KeyedVectors.load_word2vec_format(modelf,binary=False)
@@ -63,7 +47,6 @@ stopwords_file = "src/spanish-stopwords.txt"
 
 # To differentiate groups in the graph, you can give the labels a corresponding color or font size
 # e.g. words in the first group will be red, words in the second group will be blue, etc.
-
 # Color of words in each group, uses default if too many groups
 # Dark colors are good for matplotlib's white background, use hex or https://matplotlib.org/gallery/color/named_colors.html
 colors = ["tab:red", "tab:blue", "tab:green", "tab:orange",
@@ -101,7 +84,6 @@ def makeFeatureVec(words, model):
     return featureVec
 
 
-
 # A function to remove stopwords from givem multi-word expression:
 def remove_stopwords(multiword, stopwords):
     important_words =[]
@@ -111,9 +93,7 @@ def remove_stopwords(multiword, stopwords):
         
     return important_words
 
-
-
-
+# A function that finds the optimal numbeer of clusters using the elbow method:
 def get_optimal_cluster_numbers(result):
     max_number_possible_clusters = 30
     optimal_cluster_numbers = 0
@@ -127,7 +107,6 @@ def get_optimal_cluster_numbers(result):
     # For this we used an implementation: https://github.com/arvkevi/kneed
     kneedle = KneeLocator(range(1, max_number_possible_clusters), wcss, curve="convex", direction="decreasing")
     optimal_cluster_numbers = kneedle.elbow
-    
     
     # Uncomment these lines if you want to see the created plot:
     pyplot.plot(range(1, max_number_possible_clusters), wcss)
@@ -145,6 +124,7 @@ def get_optimal_cluster_numbers(result):
 
     return optimal_cluster_numbers
 
+# A function that plots the result of the clustering:
 def plot2D_scatter(result):
     pyplot.scatter(result[:, axes[0]], result[:, axes[1]], c="black", s=10)
     result_filename = "output/result_scatter_2d.png"
@@ -152,6 +132,7 @@ def plot2D_scatter(result):
     print("2D output resulting scatter saved in file:" + result_filename)
     pyplot.close()
 
+# A function that plots the scatter of the clustering, but with words grouped by their cluster:
 def plot2D_dots(result, wordgroups, words):
     for g, group in enumerate(wordgroups):
         for word in group:
@@ -169,7 +150,7 @@ def plot2D_dots(result, wordgroups, words):
     pyplot.show()
     pyplot.close()
 
-
+# A function that plots the result of the clustering, but with words grouped by their cluster:
 def plot2D_words(result, wordgroups, words):
     pyplot.scatter(result[:, axes[0]], result[:, axes[1]], c="black", s=10)
     for g, group in enumerate(wordgroups):
@@ -188,7 +169,7 @@ def plot2D_words(result, wordgroups, words):
     pyplot.show()
     pyplot.close()
 
-
+# A function that plots the result of the clustering, with words grouped by their cluster in a 3D plot:
 def plot3D(result, wordgroups, words):
     fig = pyplot.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -209,23 +190,15 @@ def plot3D(result, wordgroups, words):
     # pyplot.show()
     pyplot.close()
 
-
+# A function that reads the texts from a given file, obtains their vectors and returns it
 def get_words(wordf, model, stopwords):
     words = []
-
-    # # Extract words to plot from file
-    # for line in open(wordf, "r", encoding="utf-8").read().split("\n"):
-    #     l = [' '.join(word_tokenize(x)) for x in line.split(",")]
-    #     l = filter(lambda x: x in model.wv.vocab.keys(), l)
-    #     groups.append(l)
-    #     words += l
 
     # Extract words to plot from file
     for word in open(wordf, "r", encoding="utf-8").read().split("\n"):
         # if (word in list(model.index_to_key)):
         if len(word) > 0:
             words.append(word)
-
 
     # Get word vectors from model
     # vecs = {w: model.key_to_index[w] for w in words}
@@ -282,6 +255,7 @@ def get_words(wordf, model, stopwords):
 
     return words_new, vecs, model
 
+# A function that splits given wordlist into clusters of k numbers
 def get_groups(vecs, optimalK, model):
     groups = []
 
@@ -296,13 +270,14 @@ def get_groups(vecs, optimalK, model):
 
     return groups
 
-
+# The main function that runs the whole program:
 if __name__ == '__main__':
-    # Calculating the time it took to process everything:
+    # Calculating the time it takes to process everything:
     start_time = time.time()
     print("Programm started.")
 
     print("Loading the pretrained model:")
+    print("Please wait, it usually takes a few minutes...")
     # model = Word2Vec.load(modelf)
     
     model = load_model(modelf)
@@ -323,7 +298,6 @@ if __name__ == '__main__':
     print("Plotting in 2D:")
     # Create 2D axes to plot on
     pca = PCA(n_components=max(axes)+1)
-    # result = pca.fit_transform(coords)
     result = pca.fit_transform(coords)
 
     # One problem that may arise is that you may need the optimal number of clusters, this can also be solved:
@@ -340,21 +314,29 @@ if __name__ == '__main__':
     # Now grouping the words:
     print("Grouping the words into clusters")
     groups = get_groups(vecs,optimalK, model_new)
-    #Saving the resulting grouped data in a JSON format file:
-    with open('output/result_groups.json', 'w') as f:
-        json.dump(groups, f, indent=1)
-        f.close()
-    print("Grouped data saved in result_groups.json file.")
-    # with open('result_vectors.json', 'w') as f:
-    #     for word_vec in list(result):
-    #         json.dump(list(word_vec), f)
-    #     f.close()
-    # print("resulting vectors data saved in result_vectors.json file.")
-    # df = pd.DataFrame(result)
-    # df.style
-    with open('output/result_vectors.txt', 'wt') as out:
-        pprint(result, stream=out)
-    # pprint(result)
+
+    # Saving the resulting vectors in a csv file:
+    result_file_name = "output/result.csv"
+    with open(result_file_name, 'w', encoding='UTF8') as out:
+        # create the csv writer
+        writer = csv.writer(out, dialect='excel')
+        header = ['word', 'group', 'vector_x', 'vector_y']
+        # write the header
+        writer.writerow(header)
+        # Loop through each word in groups and write them to the file:
+        for g, group in enumerate(groups):
+            group_id = g+1
+            for word in group:
+                if not word in words:
+                    continue
+                i = words.index(word)
+                data_row = [word, group_id, result[i, 0], result[i, 1]]
+                # write a row to the csv file
+                writer.writerow(data_row)
+    out.close()
+
+    print("Resulting data saved in a file: ", result_file_name)
+
 
     print("Plotting clusters:")
     # Plot vectors on axes
